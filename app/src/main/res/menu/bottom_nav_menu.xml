@@ -1,0 +1,14 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+            android:id="@+id/menu_home"
+            android:icon="@drawable/home"
+            android:title="主界面" />
+    <item
+            android:id="@+id/menu_settings"
+            android:icon="@drawable/setting"
+            android:title="参数设置" />
+    <item
+            android:id="@+id/menu_ranking"
+            android:icon="@drawable/rank"
+            android:title="排行榜" />
+</menu>
