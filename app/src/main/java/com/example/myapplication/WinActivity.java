@@ -4,7 +4,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
+/**
+ * @author lj
+ * 显示胜利后的得分以及用时
+ */
 public class WinActivity extends AppCompatActivity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,3 +26,4 @@ public class WinActivity extends AppCompatActivity {
         timeView.setText("用时: " + timeUsed/1000 + "秒");
     }
 }
+

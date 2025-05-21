@@ -4,6 +4,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+/**
+ * @author lj
+ * 胜利广播器
+ */
 public class WinReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
