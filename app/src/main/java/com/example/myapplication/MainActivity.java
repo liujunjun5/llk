@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
@@ -70,6 +72,12 @@ public class MainActivity extends AppCompatActivity {
         }
         // 随机生成动物布局
         List<AnimalCell> cells = generateRandomCells(animalCount);
+
+        // 添加随机生成动物布局的逻辑
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        AnimalCellAdapter adapter = new AnimalCellAdapter(cells);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 9));
     }
 
     /**
