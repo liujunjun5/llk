@@ -3,6 +3,7 @@ package com.example.myapplication;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -11,9 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * @author lj
@@ -32,9 +31,41 @@ public class MainActivity extends AppCompatActivity {
     private long startTime;
     // 定义广播动作 发送游戏胜利
     public static final String ACTION_GAME_WIN = "com.example.myapplication.ACTION_GAME_WIN";
+    // 图标映射
+    private static final Map<Integer, Integer> ANIMAL_ICON_MAP = new HashMap<>();
+
+    static {
+        ANIMAL_ICON_MAP.put(1, R.drawable.animal_1);
+        ANIMAL_ICON_MAP.put(2, R.drawable.animal_2);
+        ANIMAL_ICON_MAP.put(3, R.drawable.animal_3);
+        ANIMAL_ICON_MAP.put(4, R.drawable.animal_4);
+        ANIMAL_ICON_MAP.put(5, R.drawable.animal_5);
+        ANIMAL_ICON_MAP.put(6, R.drawable.animal_6);
+        ANIMAL_ICON_MAP.put(7, R.drawable.animal_7);
+        ANIMAL_ICON_MAP.put(8, R.drawable.animal_8);
+        ANIMAL_ICON_MAP.put(9, R.drawable.animal_9);
+        ANIMAL_ICON_MAP.put(10, R.drawable.animal_10);
+        ANIMAL_ICON_MAP.put(11, R.drawable.animal_11);
+        ANIMAL_ICON_MAP.put(12, R.drawable.animal_12);
+        ANIMAL_ICON_MAP.put(13, R.drawable.animal_13);
+        ANIMAL_ICON_MAP.put(14, R.drawable.animal_14);
+        ANIMAL_ICON_MAP.put(15, R.drawable.animal_15);
+        ANIMAL_ICON_MAP.put(16, R.drawable.animal_16);
+        ANIMAL_ICON_MAP.put(17, R.drawable.animal_17);
+        ANIMAL_ICON_MAP.put(18, R.drawable.animal_18);
+        ANIMAL_ICON_MAP.put(19, R.drawable.animal_19);
+        ANIMAL_ICON_MAP.put(20, R.drawable.animal_20);
+        ANIMAL_ICON_MAP.put(21, R.drawable.animal_21);
+        ANIMAL_ICON_MAP.put(22, R.drawable.animal_22);
+        ANIMAL_ICON_MAP.put(23, R.drawable.animal_23);
+        ANIMAL_ICON_MAP.put(24, R.drawable.animal_24);
+        ANIMAL_ICON_MAP.put(25, R.drawable.animal_25);
+
+    }
 
     /**
      * 页面创建时初始化
+     *
      * @param savedInstanceState 过去保存的状态
      */
     @Override
@@ -51,6 +82,12 @@ public class MainActivity extends AppCompatActivity {
         initGameData(GameDifficulty.EASY);
         startTime = System.currentTimeMillis();
         startCountdown();
+
+        // 显示动物图标
+        ImageView animalImageView = findViewById(R.id.animal_image_view);
+        AnimalCell animalCell = new AnimalCell(0, 0, 1);
+        int iconResource = getAnimalIconResource(animalCell.type);
+        animalImageView.setImageResource(iconResource);
     }
 
     /**
@@ -181,5 +218,9 @@ public class MainActivity extends AppCompatActivity {
         if (countDownTimer != null) {
             countDownTimer.cancel();
         }
+    }
+
+    private int getAnimalIconResource(int type) {
+        return ANIMAL_ICON_MAP.getOrDefault(type, R.drawable.animal_1);
     }
 }
