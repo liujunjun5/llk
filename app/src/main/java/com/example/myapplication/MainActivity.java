@@ -3,10 +3,12 @@ package com.example.myapplication;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String ACTION_GAME_WIN = "com.example.myapplication.ACTION_GAME_WIN";
     // 图标映射
     private static final Map<Integer, Integer> ANIMAL_ICON_MAP = new HashMap<>();
-
+    private static final int MAX_ATTEMPTS = 100;
     static {
         ANIMAL_ICON_MAP.put(1, R.drawable.animal_1);
         ANIMAL_ICON_MAP.put(2, R.drawable.animal_2);
@@ -70,28 +72,46 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        try {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_main);
 
-        // 初始化导航组件
-        bottomNavView = findViewById(R.id.bottom_nav_view);
+            // 初始化导航组件
+            bottomNavView = findViewById(R.id.bottom_nav_view);
+            navController = Navigation.findNavController(this, R.id.fragment_container);
+            NavigationUI.setupWithNavController(bottomNavView, navController);
+
+            // 使用 getSupportFragmentManager 获取 NavController
+            NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            navController = navHostFragment.getNavController();
+            NavigationUI.setupWithNavController(bottomNavView, navController);
+
+            // 初始化游戏数据 默认暂时设置为简单
+            initGameData(GameDifficulty.EASY);
+            startTime = System.currentTimeMillis();
+            startCountdown();
+
+            // 显示动物图标
+            ImageView animalImageView = findViewById(R.id.animal_image_view);
+            AnimalCell animalCell = new AnimalCell(0, 0, 1);
+            int iconResource = getAnimalIconResource(animalCell.type);
+            animalImageView.setImageResource(iconResource);
+        } catch (Exception e) {
+            Log.e("MainActivity", "onCreate error: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // 在 onStart 中获取 NavController
         navController = Navigation.findNavController(this, R.id.fragment_container);
         NavigationUI.setupWithNavController(bottomNavView, navController);
-
-        // 初始化游戏数据 默认暂时设置为简单
-        initGameData(GameDifficulty.EASY);
-        startTime = System.currentTimeMillis();
-        startCountdown();
-
-        // 显示动物图标
-        ImageView animalImageView = findViewById(R.id.animal_image_view);
-        AnimalCell animalCell = new AnimalCell(0, 0, 1);
-        int iconResource = getAnimalIconResource(animalCell.type);
-        animalImageView.setImageResource(iconResource);
     }
 
     /**
      * 游戏数据的初始化
+     *
      * @param difficulty 难度枚举
      */
     private void initGameData(GameDifficulty difficulty) {
@@ -123,22 +143,21 @@ public class MainActivity extends AppCompatActivity {
      * @return 动物单元格信息的列表
      */
     private List<AnimalCell> generateRandomCells(int animalCount) {
-        List<AnimalCell> cells = new ArrayList<>();
-        // 8*9布局
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 9; j++) {
-                int type = new Random().nextInt(animalCount) + 1;
-                cells.add(new AnimalCell(i, j, type));
+        int attempts = 0;
+        List<AnimalCell> cells;
+        do {
+            cells = new ArrayList<>();
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 9; j++) {
+                    int type = new Random().nextInt(animalCount) + 1;
+                    cells.add(new AnimalCell(i, j, type));
+                }
             }
-        }
+            attempts++;
+        } while (hasInitialMatch(cells) && attempts < MAX_ATTEMPTS);
 
-        // 检查初始匹配（起始阶段相邻单元格具有相同的类型）
-        while (hasInitialMatch(cells)) {
-            cells = generateRandomCells(animalCount);
-        }
         return cells;
     }
-
     /**
      * @param cells 动物单元格信息
      * @return 有无初始匹配
